@@ -86,11 +86,13 @@ Dense(1, Sigmoid)
 ---
 
 ## 📁 Project Structure
+
 PneumoNet-AI/
-├── app.py # Streamlit dashboard
-├── pneumonia_model.keras # Trained model
-├── requirements.txt # Dependencies
-├── assets/ # Screenshots
+├── app.py                   # Streamlit dashboard (with Grad-CAM)
+├── pneumonia_model.keras    # Trained model
+├── pneumonia_training.ipynb # Training notebook
+├── requirements.txt         # Dependencies
+├── LICENSE                  # MIT License
 └── README.md
 
 
@@ -111,8 +113,6 @@ streamlit run app.py
 
 - Fine-tune deeper MobileNetV2 layers for higher accuracy
 - Expand dataset with more diverse, multi-source X-rays
-- Add Grad-CAM visualization to highlight affected lung regions
-
 ---
 
 ## ⚠️ Disclaimer
