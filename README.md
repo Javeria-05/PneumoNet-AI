@@ -15,8 +15,6 @@ PneumoNet-AI is a Deep Learning-based diagnostic support tool that classifies Ch
 
 Pneumonia remains one of the leading causes of hospitalization worldwide, and early detection through chest imaging plays a critical role in patient outcomes. PneumoNet-AI demonstrates how deep learning and computer vision can support faster, data-driven screening for public health applications.
 
-This project was built as part of an AI/Machine Learning internship focused on Deep Learning, Computer Vision, and Data Science initiatives for Public Health.
-
 ---
 
 ## ✨ Key Features
