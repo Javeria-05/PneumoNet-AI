@@ -3,6 +3,8 @@ import numpy as np
 import zipfile
 import tempfile
 import os
+import cv2
+import tensorflow as tf
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
 from tensorflow.keras.models import Model
@@ -32,6 +34,29 @@ def get_model():
     os.remove(tmp_path)
     return model
 
+def make_gradcam_heatmap(img_array, model, last_conv_layer_name="out_relu"):
+    grad_model = tf.keras.models.Model(
+        [model.inputs], [model.get_layer(last_conv_layer_name).output, model.output]
+    )
+    with tf.GradientTape() as tape:
+        conv_outputs, predictions = grad_model(img_array)
+        loss = predictions[:, 0]
+    grads = tape.gradient(loss, conv_outputs)
+    pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
+    conv_outputs = conv_outputs[0]
+    heatmap = conv_outputs @ pooled_grads[..., tf.newaxis]
+    heatmap = tf.squeeze(heatmap)
+    heatmap = tf.maximum(heatmap, 0) / (tf.math.reduce_max(heatmap) + 1e-8)
+    return heatmap.numpy()
+
+def overlay_heatmap(heatmap, original_image, alpha=0.4):
+    heatmap_resized = cv2.resize(heatmap, (original_image.shape[1], original_image.shape[0]))
+    heatmap_uint8 = np.uint8(255 * heatmap_resized)
+    heatmap_colored = cv2.applyColorMap(heatmap_uint8, cv2.COLORMAP_JET)
+    heatmap_colored = cv2.cvtColor(heatmap_colored, cv2.COLOR_BGR2RGB)
+    overlaid = cv2.addWeighted(original_image, 1 - alpha, heatmap_colored, alpha, 0)
+    return overlaid
+
 model = get_model()
 
 IMG_SIZE = (224, 224)
@@ -43,15 +68,24 @@ uploaded_file = st.file_uploader("Upload a Chest X-Ray image", type=['jpg', 'jpe
 
 if uploaded_file is not None:
     image = Image.open(uploaded_file).convert('RGB')
-    st.image(image, caption='Uploaded X-Ray', use_container_width=True)
 
     img_resized = image.resize(IMG_SIZE)
     img_array = np.array(img_resized) / 255.0
-    img_array = np.expand_dims(img_array, axis=0)
+    img_array_batch = np.expand_dims(img_array, axis=0)
 
-    prediction = model.predict(img_array)[0][0]
+    prediction = model.predict(img_array_batch)[0][0]
     predicted_class = 1 if prediction > 0.5 else 0
     confidence = prediction if predicted_class == 1 else 1 - prediction
+
+    heatmap = make_gradcam_heatmap(img_array_batch, model)
+    original_uint8 = np.array(img_resized).astype(np.uint8)
+    overlaid_image = overlay_heatmap(heatmap, original_uint8)
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.image(image, caption='Uploaded X-Ray', use_container_width=True)
+    with col2:
+        st.image(overlaid_image, caption='Grad-CAM Heatmap', use_container_width=True)
 
     st.subheader("Result:")
     if predicted_class == 1:
@@ -59,4 +93,5 @@ if uploaded_file is not None:
     else:
         st.success(f"✅ NORMAL — Confidence: {confidence*100:.2f}%")
 
+    st.caption("The heatmap highlights regions the model focused on when making its prediction (red = high influence).")
     st.caption("Note: This tool is for research/educational purposes only. Please consult a qualified doctor for medical diagnosis.")

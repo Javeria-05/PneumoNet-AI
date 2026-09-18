@@ -2,6 +2,4 @@ streamlit
 tensorflow
 pillow
 numpy
-scikit-learn
-seaborn
-matplotlib
+opencv-python
