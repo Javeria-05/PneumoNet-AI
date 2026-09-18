@@ -28,11 +28,9 @@ Pneumonia remains one of the leading causes of hospitalization worldwide, and ea
 
 ## 🖼️ Demo
 
-<img width="1362" height="562" alt="image" src="https://github.com/user-attachments/assets/65ac8658-ef75-46b3-b56a-74e2ec8e7d40" />
-<img width="1362" height="599" alt="image" src="https://github.com/user-attachments/assets/02ad35dc-6047-4cc7-b8de-f6e287d7c9e2" />
-<img width="1365" height="596" alt="image" src="https://github.com/user-attachments/assets/fd0b1797-f835-4de6-92c7-60f6b0711251" />
-<img width="1364" height="598" alt="image" src="https://github.com/user-attachments/assets/9710e6a7-e21a-4bbf-ace1-463215e65794" />
-<img width="1365" height="594" alt="image" src="https://github.com/user-attachments/assets/069616f1-3393-4dea-a699-e75ffcff21cb" />
+<img width="1068" height="633" alt="image" src="https://github.com/user-attachments/assets/cdb1f765-2330-43b8-81a3-891a01da6c1b" />
+<img width="983" height="608" alt="image" src="https://github.com/user-attachments/assets/d1f89348-e856-466d-bc9c-a5cb7b7e2779" />
+
 
 
 ---
